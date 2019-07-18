@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Code Analyzer</title>
+  </head>
+  <body>
+    <h1>Insert the Code File here</h1>
+
+    <input type="file" name="myFile" />
+    <button class="btn">Send</button>
+  </body>
+  <script>
+    //Get the DOM elments
+    const btn = document.querySelector(".btn");
+    let inputData = document.querySelector('input[type="file"]');
+    let formData = new FormData();
+
+    btn.addEventListener("click", e => {
+      //   e.preventDefault();
+      let fileData = inputData.files[0];
+      formData.append("myFile", fileData);
+
+      fetch("http://localhost:9000/analyze", {
+        method: "POST",
+        body: formData
+      })
+        .then(data => data.json())
+        .then(res => console.log(res))
+        .catch(err => console.log(err));
+    });
+  </script>
+</html>

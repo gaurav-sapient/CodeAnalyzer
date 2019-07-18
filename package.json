@@ -16,5 +16,13 @@
   "bugs": {
     "url": "https://github.com/Gaurav4441/CodeAnalyzer/issues"
   },
-  "homepage": "https://github.com/Gaurav4441/CodeAnalyzer#readme"
+  "homepage": "https://github.com/Gaurav4441/CodeAnalyzer#readme",
+  "devDependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "jshint": "^2.10.2",
+    "multer": "^1.4.2",
+    "standard": "^13.0.2"
+  }
 }
