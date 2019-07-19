@@ -8,27 +8,28 @@
   </head>
   <body>
     <h1>Insert the Code File here</h1>
-
-    <input type="file" name="myFile" />
-    <button class="btn">Send</button>
+    <form>
+      <input type="file" name="codeFile" />
+      <button class="btn">Send</button>
+    </form>
   </body>
   <script>
     //Get the DOM elments
     const btn = document.querySelector(".btn");
-    let inputData = document.querySelector('input[type="file"]');
-    let formData = new FormData();
+    const inputFile = document.querySelector('input[type="file"]');
+    const formData = new FormData();
 
     btn.addEventListener("click", e => {
-      //   e.preventDefault();
-      let fileData = inputData.files[0];
-      formData.append("myFile", fileData);
+      e.preventDefault();
+      formData.append("codeFile", inputFile.files[0]);
 
+      //Making AJAX Request to the backend server
       fetch("http://localhost:9000/analyze", {
         method: "POST",
         body: formData
       })
         .then(data => data.json())
-        .then(res => console.log(res))
+        .then(result => console.log(result))
         .catch(err => console.log(err));
     });
   </script>

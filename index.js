@@ -1,38 +1,42 @@
-// var childProcess = require("child_process");
+//Script for running separate file
 
-// function runScript(scriptPath, callback) {
-//   // keep track of whether callback has been invoked to prevent multiple invocations
-//   var invoked = false;
+var childProcess = require("child_process");
 
-//   var process = childProcess.fork(scriptPath);
+function runScript(scriptPath, callback) {
+  // keep track of whether callback has been invoked to prevent multiple invocations
+  var invoked = false;
 
-//   // listen for errors as they may prevent the exit event from firing
-//   process.on("error", function(err) {
-//     if (invoked) return;
-//     invoked = true;
-//     callback(err);
-//   });
+  var process = childProcess.fork(scriptPath);
 
-//   // execute the callback once the process has finished running
-//   process.on("exit", function(code) {
-//     if (invoked) return;
-//     invoked = true;
-//     var err = code === 0 ? null : new Error("exit code " + code);
-//     callback(err);
-//   });
-// }
+  // listen for errors as they may prevent the exit event from firing
+  process.on("error", function(err) {
+    if (invoked) return;
+    invoked = true;
+    callback(err);
+  });
 
-// // Now we can run a script and invoke a callback when complete, e.g.
-// runScript("./child.js", function(err) {
-//   if (err) throw err;
-//   //console.log("finished running some-script.js");
-// });
+  // execute the callback once the process has finished running
+  process.on("exit", function(code) {
+    if (invoked) return;
+    invoked = true;
+    var err = code === 0 ? null : new Error("exit code " + code);
+    callback(err);
+  });
+}
 
-const exec = require("child_process").exec;
-let errors = [];
-
-exec("npx jshint child.js", (err, stdout, stderr) => {
-  errors.push(stdout);
-  console.log("Errors : ", errors);
-  //   console.log(stdout);
+// Now we can run a script and invoke a callback when complete, e.g.
+runScript("./analyzer.js", function(err) {
+  if (err) throw err;
+  console.log("finished running some-script.js");
 });
+
+//Script for running shell command in Node JS
+
+// const exec = require("child_process").exec;
+// let errors = [];
+
+// exec("npx jshint child.js", (err, stdout, stderr) => {
+//   errors.push(stdout);
+//   console.log("Errors : ", errors);
+//   //   console.log(stdout);
+// });

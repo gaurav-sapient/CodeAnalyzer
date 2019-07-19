@@ -1,9 +1,17 @@
 //Importing Packages
+const fs = require("fs");
+
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const multer = require("multer");
 const app = express();
+
+const runScript = require("./runScript");
+
+//Global Variables
+let fileSaved;
+let errors = [];
 
 //Configuring Multer
 const storage = multer.diskStorage({
@@ -11,7 +19,13 @@ const storage = multer.diskStorage({
     cb(null, "uploads");
   },
   filename: function(req, file, cb) {
-    cb(null, file.fieldname + "-" + Date.now());
+    const { fieldname, originalname } = file;
+    fileSaved =
+      fieldname +
+      "-" +
+      Date.now() +
+      originalname.substring(originalname.indexOf("."), originalname.length);
+    cb(null, fileSaved);
   }
 });
 
@@ -19,19 +33,18 @@ const upload = multer({ storage: storage });
 
 //Middlewares
 app.use(cors());
-// app.use(
-//   bodyParser.urlencoded({
-//     extended: true
-//   })
-// );
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
+app.use(upload.single("codeFile"));
 
 //Routes
-app.post("/analyze", upload.single("myFile"), (req, res) => {
-  //   console.log(req.body);
-  //   console.log(req.headers);
-  console.log(req.file);
+app.post("/analyze", (req, res) => {
+  // Calling runScript
+  runScript("./analyzer.js", function(err) {
+    if (err) throw err;
+    console.log("finished running some-script.js");
+  });
+
   res.json({ Analyzed: "Yes" });
 });
 
