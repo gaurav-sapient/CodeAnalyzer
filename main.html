@@ -12,15 +12,42 @@
       <input type="file" name="codeFile" />
       <button class="btn">Send</button>
     </form>
+    <textarea name="" id="" cols="100" rows="20" class="output"></textarea>
+    <img src="./static/images/loading.gif" alt="Loading" class="loading" />
+    <div class="errorReport"></div>
   </body>
   <script>
     //Get the DOM elments
     const btn = document.querySelector(".btn");
     const inputFile = document.querySelector('input[type="file"]');
-    const formData = new FormData();
+    const output = document.querySelector(".output");
+    const errorReport = document.querySelector(".errorReport");
+    const loading = document.querySelector(".loading");
 
+    //Define Global variables
+
+    const errors = [];
+
+    //Setting Default Styles
+    output.style.display = "none";
+    loading.style.display = "none";
+
+    //Adding event Listener to the change event of input element
+    inputFile.addEventListener("change", () => {
+      output.style.display = "block";
+      const reader = new FileReader();
+      reader.onload = function() {
+        const dataContent = reader.result;
+        output.value = dataContent;
+      };
+      reader.readAsBinaryString(inputFile.files[0]);
+    });
+
+    //Adding event listener to the click event of send button
     btn.addEventListener("click", e => {
       e.preventDefault();
+      loading.style.display = "block";
+      const formData = new FormData();
       formData.append("codeFile", inputFile.files[0]);
 
       //Making AJAX Request to the backend server
@@ -29,7 +56,15 @@
         body: formData
       })
         .then(data => data.json())
-        .then(result => console.log(result))
+        .then(result => {
+          errorReport.innerHTML = "";
+          errorReport.innerHTML += "<h2>Errors Appear in the code : </h2>";
+          result.Analyzed[0].split("\n").forEach(each => {
+            console.log(each);
+            loading.style.display = "none";
+            errorReport.innerHTML += `<p>${each}</p>`;
+          });
+        })
         .catch(err => console.log(err));
     });
   </script>

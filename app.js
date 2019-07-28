@@ -1,5 +1,6 @@
 //Importing Packages
-const fs = require("fs");
+// const fs = require("fs");
+const cp = require("child_process");
 
 const express = require("express");
 const cors = require("cors");
@@ -7,7 +8,7 @@ const bodyParser = require("body-parser");
 const multer = require("multer");
 const app = express();
 
-const runScript = require("./runScript");
+// const runScript = require("./runScript");
 
 //Global Variables
 let fileSaved;
@@ -40,12 +41,29 @@ app.use(upload.single("codeFile"));
 //Routes
 app.post("/analyze", (req, res) => {
   // Calling runScript
-  runScript("./analyzer.js", function(err) {
-    if (err) throw err;
-    console.log("finished running some-script.js");
-  });
 
-  res.json({ Analyzed: "Yes" });
+  // runScript("./analyzer.js", function(err) {
+  //   if (err) throw err;
+  //   console.log("finished running some-script.js");
+  // });
+
+  const child = cp.exec(
+    `npx jshint uploads/${fileSaved}`,
+    (error, stdout, stderr) => {
+      // if (error) {
+      //   console.log(error);
+      // }
+      // if (stderr) {
+      //   console.log(stderr);
+      // } else {
+      {
+        console.log(stdout);
+        errors = [];
+        errors.push(stdout);
+        res.json({ Analyzed: errors });
+      }
+    }
+  );
 });
 
 //Server Listening
