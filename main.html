@@ -59,10 +59,17 @@
         .then(result => {
           errorReport.innerHTML = "";
           errorReport.innerHTML += "<h2>Errors Appear in the code : </h2>";
-          result.Analyzed[0].split("\n").forEach(each => {
+          result = result.Analyzed[0].split("\n");
+          result = result.filter(e => e);
+          result.forEach(each => {
             console.log(each);
             loading.style.display = "none";
-            errorReport.innerHTML += `<p>${each}</p>`;
+            const lastIndexOfJs =
+              each.indexOf(".js:") != -1 ? each.indexOf(".js:") + 5 : 0;
+            errorReport.innerHTML += `<p>${each.substring(
+              lastIndexOfJs,
+              each.length
+            )}</p>`;
           });
         })
         .catch(err => console.log(err));
